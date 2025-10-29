@@ -24,6 +24,13 @@ freq = st.sidebar.slider("Publicações por semana", 1, 7, 3)
 dias = st.sidebar.text_input("Dias de publicação", "segunda, quarta e sexta")
 pilares = st.sidebar.multiselect("Pilares ativos", presets["pilares"], default=presets["pilares"])
 
+model = st.sidebar.selectbox(
+    "Modelo Gemini",
+    ["gemini-2.0-flash", "gemini-2.0-pro"],
+    index=0
+)
+
+
 # Gems
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 TRELLO_KEY = os.environ.get("TRELLO_KEY", "")
@@ -62,7 +69,7 @@ def call_gemini(mes: str, freq_semana: int, dias_txt: str, pilares_list: list) -
         "contents": [{"role": "user", "parts": [{"text": user_text}]}],
         "generationConfig": {"response_mime_type": "application/json"},
     }
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
+    url = url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     resp = requests.post(url, headers=headers, json=body, timeout=90)
     try:
         payload = resp.json()
